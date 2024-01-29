@@ -3,7 +3,6 @@
     "version": "1.0.0",
     "main": "src/index.ts",
     "scripts": {
-        "preinstall": "npm install -g pm2 || true",
         "dev": "nodemon src/index.ts",
         "build": "tsc",
         "start": "pm2 start ./dist/index.js --no-daemon",
