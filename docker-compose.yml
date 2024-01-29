@@ -79,7 +79,7 @@ services:
     # the first number is the port on the host machine
     # the second number is the port inside the container
     ports:
-      - ${DB_PORT}:5432
+      - ${DB_PORT}:${DB_PORT}
 
   # define the adminer service
   adminer:

@@ -37,7 +37,7 @@ COPY . .
 
 EXPOSE 8080
 
-CMD npm run generate; npm run build; npm run start
+CMD npm run generate; npm run db:push; npm run build; npm run start
 
 # build the image
 # docker build -t express-boilerplate .
