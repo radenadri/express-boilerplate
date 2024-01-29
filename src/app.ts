@@ -33,6 +33,7 @@ app.use(errorHandler);
 app.use(rateLimiter);
 
 /* Routing */
+app.get('/', (_req, res) => res.send('Welcome to the API!'));
 app.use(`/api/${API_VERSION}`, routes);
 
 export default app;

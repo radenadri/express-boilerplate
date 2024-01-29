@@ -1,0 +1,89 @@
+# specify the version of docker-compose
+version: "3.8"
+
+# define the services/containers to be run
+services:
+  # define the api service/container
+  api:
+    # api service depends on the db service so the db service will be started before the api service
+    depends_on:
+      - db
+
+    # specify the build context for the api service
+    build: .
+
+    # specify the ports to expose for the api service
+    # the first number is the port on the host machine
+    # the second number is the port inside the container
+    ports:
+      - ${APP_PORT}:${APP_PORT}
+
+    env_file:
+      - .env
+
+    # specify environment variables for the api service
+    # for demo purposes, we're using a local mongodb instance
+    environment:
+      NODE_ENV: ${NODE_ENV}
+
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+
+      APP_PORT: ${APP_PORT}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
+      ORIGIN: ${ORIGIN}
+
+
+    # establish docker compose watch mode for the api service
+    develop:
+      # specify the files to watch for changes
+      watch:
+        # it'll watch for changes in package.json and package-lock.json and rebuild the container and image if there are any changes
+        - path: ./package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+
+        # it'll watch for changes in the backend directory and sync the changes with the container real time
+        - path: .
+          target: /app
+          action: sync
+
+  # define the db service
+  db:
+    # specify the image to use for the db service from docker hub. If we have a custom image, we can specify that in this format
+    # In the above two services, we're using the build context to build the image for the service from the Dockerfile so we specify the image as "build: ./frontend" or "build: ./backend".
+    # but for the db service, we're using the image from docker hub so we specify the image as "image: postgres:latest"
+    # you can find the image name and tag for postgres from docker hub here: https://hub.docker.com/_/postgres
+    image: postgres
+
+    # specify the restart policy for the db service
+    restart: always
+
+    # specify the environment variables for the db service
+    env_file:
+      - .env
+
+    # specify the environment variables for the db service
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
+
+    # specify the ports to expose for the db service
+    # the first number is the port on the host machine
+    # the second number is the port inside the container
+    ports:
+      - ${DB_PORT}:5432
+
+  # define the adminer service
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 6969:6969
