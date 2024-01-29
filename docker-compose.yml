@@ -39,16 +39,14 @@ services:
 
       ORIGIN: ${ORIGIN}
 
+    # specify the volumes to mount for the api service
     volumes:
       - .:/app
       - /app/node_modules
 
   # define the db service
   db:
-    # specify the image to use for the db service from docker hub. If we have a custom image, we can specify that in this format
-    # In the above two services, we're using the build context to build the image for the service from the Dockerfile so we specify the image as "build: ./frontend" or "build: ./backend".
-    # but for the db service, we're using the image from docker hub so we specify the image as "image: postgres:latest"
-    # you can find the image name and tag for postgres from docker hub here: https://hub.docker.com/_/postgres
+    # specify the image for the db service
     image: postgres
 
     # specify the restart policy for the db service
