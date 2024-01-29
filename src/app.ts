@@ -5,13 +5,12 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
-import { ORIGIN } from './config';
+import { API_VERSION, ORIGIN } from './config';
 import errorHandler from './middlewares/error-handler';
 import { rateLimiter } from './middlewares/rate-limiter';
 import routes from './routes';
 
 const app = express();
-const API_VERSION = 'v1';
 
 /* Library Middlewares */
 app.use(morgan('dev'));

@@ -33,6 +33,7 @@ router.post('/login', validate(loginSchema), rateLimiterStrict, async (req, res)
 
         res.status(200).send({ accessToken });
     } catch (error) {
+        console.log(error);
         res.status(400).send({ error: 'Something went wrong logging you in' });
     }
 });
