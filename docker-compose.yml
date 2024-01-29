@@ -10,7 +10,9 @@ services:
       - db
 
     # specify the build context for the api service
-    build: .
+    build:
+      context: .
+      target: ${NODE_ENV}
 
     # specify the ports to expose for the api service
     # the first number is the port on the host machine
@@ -37,21 +39,9 @@ services:
 
       ORIGIN: ${ORIGIN}
 
-
-    # establish docker compose watch mode for the api service
-    develop:
-      # specify the files to watch for changes
-      watch:
-        # it'll watch for changes in package.json and package-lock.json and rebuild the container and image if there are any changes
-        - path: ./package.json
-          action: rebuild
-        - path: ./package-lock.json
-          action: rebuild
-
-        # it'll watch for changes in the backend directory and sync the changes with the container real time
-        - path: .
-          target: /app
-          action: sync
+    volumes:
+      - .:/app
+      - /app/node_modules
 
   # define the db service
   db:
@@ -74,6 +64,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_HOST_AUTH_METHOD: trust
+      PGPORT: ${DB_PORT}
 
     # specify the ports to expose for the db service
     # the first number is the port on the host machine

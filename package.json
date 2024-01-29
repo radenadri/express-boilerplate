@@ -9,7 +9,6 @@
         "start": "pm2 start ./dist/index.js --no-daemon",
         "generate": "drizzle-kit generate:pg",
         "generate:custom": "drizzle-kit generate:pg --custom",
-        "db:push": "drizzle-kit push:pg",
         "studio": "drizzle-kit studio",
         "commit": "cz",
         "prepare": "husky install",
