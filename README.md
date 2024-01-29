@@ -40,3 +40,7 @@
 ## Browser SQL editor
 
     npm run studio
+
+Inspired by this repo : <https://github.com/zacharynoble/express-typescript-postgres-drizzle-auth-template>
+
+Big thanks to the author.
