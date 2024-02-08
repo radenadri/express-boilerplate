@@ -7,6 +7,66 @@ import { createPostSchema, updatePostSchema } from './schema';
 
 const router = express.Router();
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The post ID.
+ *           example: 1
+ *         title:
+ *           type: string
+ *           description: The post title.
+ *           example: Hello World
+ *         body:
+ *           type: string
+ *           description: The post body.
+ *           example: This is my first post
+ *         user_id:
+ *           type: integer
+ *           description: The user ID.
+ *           example: 1
+ *
+ * /posts:
+ *   get:
+ *     summary: Get all posts
+ *     description: Get all posts and return them as a json
+ *     tags: [Post]
+ *     parameters:
+ *       - in: header
+ *         name: Content-Type
+ *         schema:
+ *           type: string
+ *           default: application/json
+ *         required: true
+ *     responses:
+ *       200:
+ *           description: Successfully get all posts
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       posts:
+ *                         type: array
+ *                         items:
+ *                           $ref: '#/components/schemas/Post'
+ *       400:
+ *           description: Something went wrong getting your posts
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Something went wrong getting your posts
+ */
 router.get('/', async (req, res) => {
     try {
         const posts = await getAllPosts();
@@ -16,6 +76,71 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The post ID.
+ *           example: 1
+ *         title:
+ *           type: string
+ *           description: The post title.
+ *           example: Hello World
+ *         body:
+ *           type: string
+ *           description: The post body.
+ *           example: This is my first post
+ *         user_id:
+ *           type: integer
+ *           description: The user ID.
+ *           example: 1
+ *
+ * /posts/users/{userId}:
+ *   get:
+ *     summary: Get all posts by user
+ *     description: Get all posts by user and return them as a json
+ *     tags: [Post]
+ *     parameters:
+ *       - in: header
+ *         name: Content-Type
+ *         schema:
+ *           type: string
+ *           default: application/json
+ *         required: true
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *           description: Successfully get all posts
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       posts:
+ *                         type: array
+ *                         items:
+ *                           $ref: '#/components/schemas/Post'
+ *       400:
+ *           description: Something went wrong getting your posts
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Something went wrong getting your posts
+ */
 router.get('/users/:userId', async (req, res) => {
     try {
         const userId = parseInt(req.params.userId);
@@ -26,6 +151,86 @@ router.get('/users/:userId', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The post ID.
+ *           example: 1
+ *         title:
+ *           type: string
+ *           description: The post title.
+ *           example: Hello World
+ *         body:
+ *           type: string
+ *           description: The post body.
+ *           example: This is my first post
+ *         user_id:
+ *           type: integer
+ *           description: The user ID.
+ *           example: 1
+ *
+ * /posts:
+ *   post:
+ *     summary: Create a new post
+ *     description: Create a new post and return it
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Content-Type
+ *         schema:
+ *           type: string
+ *           default: application/json
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The post title.
+ *                 example: Hello World
+ *               body:
+ *                 type: string
+ *                 description: The post body.
+ *                 example: This is my first post
+ *     responses:
+ *       200:
+ *           description: Successfully created post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       post:
+ *                         type: object
+ *                         $ref: '#/components/schemas/Post'
+ *       400:
+ *           description: Something went wrong creating your post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Something went wrong creating your post
+ */
 router.post('/', validate(createPostSchema), authenticateUser, async (req, res) => {
     try {
         const { title, body } = req.body;
@@ -37,6 +242,81 @@ router.post('/', validate(createPostSchema), authenticateUser, async (req, res) 
     }
 });
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The post ID.
+ *           example: 1
+ *         title:
+ *           type: string
+ *           description: The post title.
+ *           example: Hello World
+ *         body:
+ *           type: string
+ *           description: The post body.
+ *           example: This is my first post
+ *         user_id:
+ *           type: integer
+ *           description: The user ID.
+ *           example: 1
+ *
+ * /posts/{postId}:
+ *   get:
+ *     summary: Get post by ID
+ *     description: Get post by ID and return it as a json
+ *     tags: [Post]
+ *     parameters:
+ *       - in: header
+ *         name: Content-Type
+ *         schema:
+ *           type: string
+ *           default: application/json
+ *         required: true
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *           description: Successfully get post by ID
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       post:
+ *                         type: object
+ *                         $ref: '#/components/schemas/Post'
+ *       400:
+ *           description: Something went wrong getting your post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Something went wrong getting your post
+ *       404:
+ *           description: Could not find post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Could not find post
+ */
 router.get('/:postId', async (req, res) => {
     try {
         const postId = parseInt(req.params.postId);
@@ -48,6 +328,102 @@ router.get('/:postId', async (req, res) => {
     }
 });
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *   schemas:
+ *     Post:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: The post ID.
+ *           example: 1
+ *         title:
+ *           type: string
+ *           description: The post title.
+ *           example: Hello World
+ *         body:
+ *           type: string
+ *           description: The post body.
+ *           example: This is my first post
+ *         user_id:
+ *           type: integer
+ *           description: The user ID.
+ *           example: 1
+ *
+ * /posts/{postId}:
+ *   put:
+ *     summary: Update post
+ *     description: Update post and return it
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Content-Type
+ *         schema:
+ *           type: string
+ *           default: application/json
+ *         required: true
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: The post title.
+ *                 example: Hello World
+ *               body:
+ *                 type: string
+ *                 description: The post body.
+ *                 example: This is my first post
+ *     responses:
+ *       200:
+ *           description: Successfully created post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       post:
+ *                         type: object
+ *                         $ref: '#/components/schemas/Post'
+ *       400:
+ *           description: Something went wrong updating your post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Something went wrong updating your post
+ *       404:
+ *           description: Could not find post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Could not find post
+ */
 router.put('/:postId', validate(updatePostSchema), authenticateUser, async (req, res) => {
     try {
         const { body } = req.body;
@@ -64,6 +440,68 @@ router.put('/:postId', validate(updatePostSchema), authenticateUser, async (req,
     }
 });
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *
+ * /posts/{postId}:
+ *   delete:
+ *     summary: Delete post
+ *     description: Delete post and return the success deletion message
+ *     tags: [Post]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: header
+ *         name: Content-Type
+ *         schema:
+ *           type: string
+ *           default: application/json
+ *         required: true
+ *       - in: path
+ *         name: postId
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *           description: Successfully deleted post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       message:
+ *                         type: string
+ *                         description: The success deletion message
+ *                         example: Successfully deleted post
+ *       400:
+ *           description: Something went wrong deleting your post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Something went wrong deleting your post
+ *       404:
+ *           description: Could not find post
+ *           content:
+ *               application/json:
+ *                   schema:
+ *                     type: object
+ *                     properties:
+ *                       error:
+ *                         type: string
+ *                         description: The error message
+ *                         example: Could not find post
+ */
 router.delete('/:postId', authenticateUser, async (req, res) => {
     try {
         const postId = parseInt(req.params.postId);

@@ -46,6 +46,10 @@
 
     npm run studio
 
+## View API Docs (Swagger)
+
+    http://localhost:(APP_PORT)/api-docs
+
 Inspired by this repo : <https://github.com/zacharynoble/express-typescript-postgres-drizzle-auth-template>
 
 Big thanks to the author.

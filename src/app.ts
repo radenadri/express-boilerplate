@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { API_VERSION, ORIGIN } from './config';
 import errorHandler from './middlewares/error-handler';
 import { rateLimiter } from './middlewares/rate-limiter';
+import { specs, swaggerUi } from './middlewares/swagger';
 import routes from './routes';
 
 const app = express();
@@ -30,6 +31,7 @@ app.use(
 /* App Middlewares */
 app.use(errorHandler);
 app.use(rateLimiter);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 /* Routing */
 app.get('/', (_req, res) => res.send('Hello world!'));
